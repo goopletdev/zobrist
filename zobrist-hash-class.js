@@ -3,29 +3,29 @@
  */
 
 /**
- * Initializes and returns new hash array, 
- * adding each new hash to given set for easy lookup.
- * @param {Set.<number>} hashes Set of unique hashes
- * @param {number} numKeys Number of new hash keys
- * @returns {Array.<number>} Array starting with 0, 
- * followed [numValues] amount of unique hashes
+ * Initializes and returns new pseudorandom number array, 
+ * adding each new number to given set for easy lookup.
+ * @param {Set.<number>} numbers Set of unique numbers
+ * @param {number} quantity Number of new numbers
+ * @returns {Array.<number>} Array starting with 0, followed 
+ * by [quantity] amount of unique pseudo-random numbers
  */
-const initHash = (hashes,numKeys) => {
-    const newHashes = [0];
-    for (let val=1; val <= numKeys; val++) {
-        let hash;
-        do { // generate unique hash not in hashes set
-            hash = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
-        } while (hashes.has(hash)); // redo if hash already exists
-        hashes.add(hash); // add to hashes set for easy access
-        newHashes.push(hash);
+const initNumbers = (numbers,quantity) => {
+    const newNumbers = [0];
+    for (let val=1; val <= quantity; val++) {
+        let num;
+        do { // generate unique number not in numbers set
+            num = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
+        } while (numbers.has(num)); // redo if number already exists
+        numbers.add(num); // add to numbers set for easy access
+        newNumbers.push(num);
     }
-    return newHashes;
+    return newNumbers;
 }
 
 class KoHash {
     /**
-     * Initializes this.hashes for making Zobrist hashes from board state
+     * Initializes this.nums for making Zobrist hashes from board state
      * @param {number} size Number of vertices on board
      * @param {number} values Number of possible non-zero values at each vertex
      * @param {number} [situational=0] Whether to account for 
@@ -33,27 +33,27 @@ class KoHash {
      * number of players for situational superko. 
      */
     constructor (size, values, situational = 0) {
-        const hashes = new Set();
+        const numbers = new Set();
 
         /**
          * Array containing one sub-array for each vertex.
-         * Each vertex has one hash key for each possible 
-         * non-empty state.
+         * Each vertex has one pseudo-random number for 
+         * each possible non-empty state.
          * @type {Array<number[]>}
          */
-        this.hashes = [];
+        this.nums = [];
 
         for (let vertex=0; vertex < size; vertex++) {
-            this.hashes[vertex] = initHash(hashes,values);
+            this.nums[vertex] = initNumbers(numbers,values);
         }
 
         if (situational) {
             /**
-             * Array containing 0 followed by one hash key for 
+             * Array containing 0 followed by one number for 
              * each possible player.
              * @type {Array.<number>}
              */
-            this.toPlay = initHash(hashes,situational); 
+            this.toPlay = initNumbers(numbers,situational); 
         }
 
         /**
@@ -65,19 +65,19 @@ class KoHash {
 
     /**
      * Generate a hash key based on current board state.
-     * @param {Array.<number>} state 1-d Board state of length this.hashes
+     * @param {Array.<number>} state 1-d Board state of length this.nums
      * @param {number} [toPlay=0] Player to play, for situational superko
      * @returns {number} New hash key
      */
     hash = (state, toPlay=0) => {
-        let hash = state.reduce((hash,val,i) => hash ^ this.hashes[i][val]);
+        let hash = state.reduce((hash,val,i) => hash ^ this.nums[i][val]);
         return this.toPlay ? hash ^ this.toPlay[toPlay] : hash;
     }
 
     /**
      * Returns and adds a unique hash key to this.keys, or throws an error
      * if this.keys already contains the new hash
-     * @param {Array.<number>} state 1-d Board state of length this.hashes
+     * @param {Array.<number>} state 1-d Board state of length this.nums
      * @param {number} [toPlay=0] Player to play, for situational superko
      * @returns {number} Unique hash key
      * @throws If the new hash key is not unique in this.keys
