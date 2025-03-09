@@ -9,6 +9,10 @@ Make a `new KoHash(size, values)` with the board size (number of vertices) and n
 
 From there, you can `koHashObject.add(boardState)` for each new state, and it will generate a new unique hash key, or throw an error if the key already exists.
 
+## Reading list:
+- [Thomas Finley 'Two's Compliment'](https://www.cs.cornell.edu/~tomf/notes/cps104/twoscomp.html)
+- [Deep Learning and the Game of Go](https://www.manning.com/books/deep-learning-and-the-game-of-go)
+
 ## New knowledge!
 This project is a part of my JavaScript self-study. This project makes use of the [Bitwise XOR operator](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Bitwise_XOR) `^`. In learning how this works, I found myself learning about signed integers and  [Two's complement](https://en.wikipedia.org/wiki/Two%27s_complement). To deal with large numbers unexpectedly becoming negative (is this a type of integer overflow? i should figure that out), I learned about the [Unsigned right shift](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Unsigned_right_shift) `>>>`, though I'm not so sure it's actually necessary for my implementation. Bitwise operators seem really neat, though, and I'm excited to find more interesting use cases for them!
 
