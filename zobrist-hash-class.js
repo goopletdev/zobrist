@@ -47,32 +47,33 @@ class ZobristHash {
      * number of players for situational superko. 
      */
     constructor (size, values, situational = 0) {
-        const numbers = new Set();
+        // keep track of bigints during initialization to ensure uniqueness
+        const bigints = new Set();
 
         /**
          * Array containing one sub-array for each vertex.
-         * Each vertex has one pseudo-random number for 
+         * Each vertex has one pseudo-random BigInt for 
          * each possible non-empty state.
-         * @type {Array<number[]>}
+         * @type {Array<BigInt[]>}
          */
         this.nums = [];
 
         for (let vertex=0; vertex < size; vertex++) {
-            this.nums[vertex] = initNumbers(numbers,values);
+            this.nums[vertex] = initBigInts(bigints,values);
         }
 
         if (situational) {
             /**
              * Array containing 0 followed by one number for 
              * each possible player.
-             * @type {Array.<number>}
+             * @type {Array.<BigInt>}
              */
-            this.toPlay = initNumbers(numbers,situational); 
+            this.toPlay = initBigInts(bigints,situational); 
         }
 
         /**
          * Contains each state hash key added with this.add()
-         * @type {Set.<number>}
+         * @type {Set.<BigInt>}
          */
         this.keys = new Set();
     }
@@ -93,7 +94,7 @@ class ZobristHash {
      * if this.keys already contains the new hash
      * @param {Array.<number>} state 1-d Board state of length this.nums
      * @param {number} [toPlay=0] Player to play, for situational superko
-     * @returns {number} Unique hash key
+     * @returns {BigInt} Unique hash key
      * @throws If the new hash key is not unique in this.keys
      */
     add = (state, toPlay=0) => {
@@ -114,4 +115,4 @@ class ZobristHash {
     remove = (key) => this.keys.delete(key);
 }
 
-module.exports = KoHash;
+module.exports = ZobristHash;
