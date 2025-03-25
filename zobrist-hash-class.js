@@ -1,29 +1,43 @@
 /**
- * @module KoHash zobrist hash table handler
+ * Zobrist hash table handler
+ * @module ZobristHash
  */
+
+/**
+ * Generates a new random bigint
+ * @param {number} bits Size of bigint
+ * @returns {BigInt}
+ */
+const randomBigInt = (bits) => {
+    let binary = '0b';
+    while (bits-- > 0) {
+        binary += Math.floor(Math.random() * 2);
+    }
+    return BigInt(binary);
+}
 
 /**
  * Initializes and returns new pseudorandom number array, 
  * adding each new number to given set for easy lookup.
- * @param {Set.<number>} numbers Set of unique numbers
+ * @param {Set.<BigInt>} bigints Set of unique numbers
  * @param {number} quantity Number of new numbers
- * @returns {Array.<number>} Array starting with 0, followed 
- * by [quantity] amount of unique pseudo-random numbers
+ * @returns {Array.<BigInt>} Array starting with empty element, 
+ * followed by [quantity] amount of unique pseudo-random numbers
  */
-const initNumbers = (numbers,quantity) => {
+const initBigInts = (bigints,quantity) => {
     const newNumbers = [0];
     for (let val=1; val <= quantity; val++) {
         let num;
-        do { // generate unique number not in numbers set
-            num = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
-        } while (numbers.has(num)); // redo if number already exists
-        numbers.add(num); // add to numbers set for easy access
+        do { // generate unique 64-bit bigint not in bigints set
+            num = randomBigInt(64);
+        } while (bigints.has(num)); // redo if number already exists
+        bigints.add(num); // add to bigints set for easy access
         newNumbers.push(num);
     }
     return newNumbers;
 }
 
-class KoHash {
+class ZobristHash {
     /**
      * Initializes this.nums for making Zobrist hashes from board state
      * @param {number} size Number of vertices on board
