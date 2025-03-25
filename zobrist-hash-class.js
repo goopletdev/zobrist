@@ -82,11 +82,13 @@ class ZobristHash {
      * Generate a hash key based on current board state.
      * @param {Array.<number>} state 1-d Board state of length this.nums
      * @param {number} [toPlay=0] Player to play, for situational superko
-     * @returns {number} New hash key
+     * @returns {BigInt} New hash key
      */
     hash = (state, toPlay=0) => {
-        let hash = state.reduce((hash,val,i) => hash ^ this.nums[i][val]);
-        return this.toPlay ? hash ^ this.toPlay[toPlay] : hash;
+        let newHash = state.reduce((hash,val,i) => {
+            return val ? hash ^ this.nums[i][val] : hash;
+        }, 0n);
+        return toPlay ? newHash ^ this.toPlay[toPlay] : newHash;
     }
 
     /**
